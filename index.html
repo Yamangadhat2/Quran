@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<header lang="ar" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>روضة القرآن | المصحف الشريف والتفسير الذكي</title>
-    <!-- Tailwind CSS فاخر -->
+    <title>روضة القرآن | المصحف الملكي والتلاوة التفاعلية والذكاء الاصطناعي</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts (Amiri for Quran, Tajawal for UI) -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,8 +14,9 @@
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #031610;
+            background-color: #02130e;
             color: #E6D5B8;
+            padding-bottom: 90px; /* مساحة لشريط الصوت السفلي */
         }
         .quran-text {
             font-family: 'Amiri', serif;
@@ -29,36 +30,41 @@
             border-color: #C5A059;
         }
         .gold-bg {
-            background-color: #11382A;
-            border: 1px solid #C5A059;
+            background: linear-gradient(145deg, #072218, #041610);
+            border: 1px solid rgba(197, 160, 89, 0.4);
         }
-        /* تخصيص شريط التمرير */
+        .ayah-item {
+            transition: all 0.4s ease;
+        }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #031610; }
+        ::-webkit-scrollbar-track { background: #02130e; }
         ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 3px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-[#C5A059] selection:text-black">
 
     <!-- شريط التنقل العلوي -->
-    <header class="gold-bg shadow-lg sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+    <header class="gold-bg shadow-2xl sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-[#C5A059] text-[#031610] font-bold text-xl shadow-inner">
+                <div class="w-11 h-11 rounded-full flex items-center justify-center bg-gradient-to-tr from-[#BF953F] to-[#FCF6BA] text-[#02130e] font-black text-xl shadow-lg">
                     <i class="fa-solid fa-quran"></i>
                 </div>
-                <h1 class="text-2xl font-black gold-gradient tracking-wide">روضة القرآن</h1>
+                <div>
+                    <h1 class="text-2xl font-black gold-gradient tracking-wide">روضة القرآن</h1>
+                    <span class="text-[10px] text-[#C5A059] tracking-widest uppercase">المصحف الملكي الرقمي</span>
+                </div>
             </div>
             
             <nav class="flex space-x-2 space-x-reverse mt-2 sm:mt-0">
-                <button onclick="switchTab('quran')" id="btn-quran" class="px-4 py-2 rounded-lg font-bold text-sm bg-[#C5A059] text-[#031610] transition shadow">
-                    <i class="fa-solid fa-book-open ml-1"></i> المصحف الشريف
+                <button onclick="switchTab('quran')" id="btn-quran" class="px-4 py-2 rounded-xl font-bold text-sm bg-gradient-to-r from-[#BF953F] to-[#AA771C] text-[#02130e] transition shadow-lg">
+                    <i class="fa-solid fa-book-open ml-1"></i> المصحف والتلاوة
                 </button>
-                <button onclick="switchTab('rosary')" id="btn-rosary" class="px-4 py-2 rounded-lg font-bold text-sm text-[#E6D5B8] hover:bg-[#1a4d3a] transition">
-                    <i class="fa-solid fa-circle-nodes ml-1"></i> المسبحة الإلكترونية
+                <button onclick="switchTab('rosary')" id="btn-rosary" class="px-4 py-2 rounded-xl font-bold text-sm text-[#E6D5B8] hover:bg-[#0d3b2e] transition">
+                    <i class="fa-solid fa-circle-nodes ml-1"></i> المسبحة
                 </button>
-                <button onclick="switchTab('ai')" id="btn-ai" class="px-4 py-2 rounded-lg font-bold text-sm text-[#E6D5B8] hover:bg-[#1a4d3a] transition">
-                    <i class="fa-solid fa-robot ml-1"></i> مساعد التفسير الذكي
+                <button onclick="switchTab('ai')" id="btn-ai" class="px-4 py-2 rounded-xl font-bold text-sm text-[#E6D5B8] hover:bg-[#0d3b2e] transition">
+                    <i class="fa-solid fa-robot ml-1"></i> التفسير الذكي AI
                 </button>
             </nav>
         </div>
@@ -67,34 +73,59 @@
     <!-- المحتوى الرئيسي -->
     <main class="flex-grow max-w-5xl w-full mx-auto p-4 sm:p-6">
 
-        <!-- قسم المصحف الشريف -->
+        <!-- قسم المصحف والشيوخ والتلاوة التتابعية -->
         <section id="section-quran" class="space-y-6">
-            <div class="gold-bg p-6 rounded-2xl shadow-xl text-center relative overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 text-[#C5A059] opacity-10 text-9xl">
+            <div class="gold-bg p-6 rounded-3xl shadow-2xl relative overflow-hidden">
+                <div class="absolute -left-10 -bottom-10 text-[#C5A059] opacity-5 text-9xl pointer-events-none">
                     <i class="fa-solid fa-quran"></i>
                 </div>
-                <h2 class="text-3xl font-bold gold-gradient mb-2">القرآن الكريم كاملاً</h2>
-                <p class="text-sm text-[#d4af37b8] mb-6">اختر السورة لتتلو آياتها وتتدبر معانيها</p>
                 
-                <!-- قائمة السور -->
-                <div class="flex flex-wrap justify-center gap-2 max-h-48 overflow-y-auto p-2 border border-[#C5A059]/30 rounded-xl" id="surahs-list">
-                    <!-- يتم تعبئتها تلقائياً عبر JavaScript -->
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold gold-gradient">المصحف الشريف والتلاوة الصوتية</h2>
+                        <p class="text-xs text-[#d4af37b8] mt-1">اختر السورة والشيخ، واستمتع بالمتابعة والتظليل التلقائي</p>
+                    </div>
+                    
+                    <!-- اختيار القارئ -->
+                    <div class="flex items-center space-x-2 space-x-reverse w-full md:w-auto">
+                        <label class="text-xs text-[#C5A059] whitespace-nowrap"><i class="fa-solid fa-microphone-lines ml-1"></i> القارئ:</label>
+                        <select id="reciter-select" onchange="onReciterChange()" class="bg-[#031610] border border-[#C5A059] rounded-xl px-3 py-2 text-xs text-[#E6D5B8] focus:outline-none shadow-inner w-full md:w-48">
+                            <option value="ar.alafasy">مشاري العفاسي</option>
+                            <option value="ar.abdulrahmanalsudais">عبد الرحمن السديس</option>
+                            <option value="ar.minshawi">محمد صديق المنشاوي</option>
+                            <option value="ar.mahermuaiqly">ماهر المعيقلي</option>
+                            <option value="ar.abdulbasit">عبد الباسط عبد الصمد</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- قائمة السور الأفقية -->
+                <div class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-3 bg-[#020d09] border border-[#C5A059]/20 rounded-2xl" id="surahs-list">
+                    <!-- تعبئة تلقائية -->
                 </div>
             </div>
 
-            <!-- عرض الآيات -->
-            <div id="quran-container" class="gold-bg p-6 sm:p-10 rounded-2xl shadow-2xl min-h-[400px] relative">
-                <div id="loading-quran" class="text-center py-20 text-[#C5A059]">
-                    <i class="fa-solid fa-spinner fa-spin text-4xl mb-3"></i>
-                    <p>جاري تحميل سور القرآن الكريم...</p>
+            <!-- لوحة عرض الآيات -->
+            <div class="gold-bg p-6 sm:p-12 rounded-3xl shadow-2xl min-h-[500px] relative border border-[#C5A059]/40">
+                <div id="loading-quran" class="text-center py-28 text-[#C5A059]">
+                    <i class="fa-solid fa-spinner fa-spin text-5xl mb-4"></i>
+                    <p class="text-lg">جاري تجهيز المصحف والآيات...</p>
                 </div>
+                
                 <div id="verses-box" class="hidden">
-                    <div class="text-center pb-6 border-b border-[#C5A059]/30 mb-6">
-                        <h3 id="current-surah-name" class="text-3xl font-bold gold-gradient quran-text"></h3>
-                        <p id="bismillah" class="text-xl quran-text mt-3 text-[#E6D5B8]">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                    <div class="text-center pb-8 border-b border-[#C5A059]/30 mb-8">
+                        <h3 id="current-surah-name" class="text-3xl font-black gold-gradient quran-text mb-2"></h3>
+                        <div class="flex justify-center items-center gap-4 mt-4">
+                            <button onclick="startRecitation()" class="px-6 py-2.5 bg-gradient-to-r from-[#BF953F] to-[#AA771C] text-[#02130e] font-bold rounded-xl shadow-lg hover:opacity-90 transition flex items-center gap-2">
+                                <i class="fa-solid fa-play"></i> بدء التلاوة المتتابعة
+                            </button>
+                            <span id="bismillah" class="text-2xl quran-text text-[#E6D5B8] hidden">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
+                        </div>
                     </div>
-                    <div id="verses-content" class="text-2xl leading-loose quran-text text-justify space-y-4">
-                        <!-- الآيات -->
+                    
+                    <!-- نص الآيات -->
+                    <div id="verses-content" class="text-3xl leading-[2.6] quran-text text-justify space-x-reverse space-y-2">
+                        <!-- الآيات المتسلسلة -->
                     </div>
                 </div>
             </div>
@@ -102,13 +133,12 @@
 
         <!-- قسم المسبحة الإلكترونية -->
         <section id="section-rosary" class="hidden space-y-6">
-            <div class="gold-bg p-8 rounded-2xl shadow-2xl text-center max-w-xl mx-auto relative">
+            <div class="gold-bg p-8 rounded-3xl shadow-2xl text-center max-w-xl mx-auto relative border border-[#C5A059]/40">
                 <h2 class="text-2xl font-bold gold-gradient mb-4">المسبحة الإلكترونية المباركة</h2>
                 
-                <!-- اختيار الذكر -->
-                <div class="mb-6">
-                    <label class="block text-sm mb-2 text-[#E6D5B8]">اختر الذكر:</label>
-                    <select id="dhikr-select" class="w-full bg-[#031610] border border-[#C5A059] rounded-xl px-4 py-3 text-[#E6D5B8] focus:outline-none">
+                <div class="mb-6 text-right">
+                    <label class="block text-xs mb-2 text-[#C5A059]">اختر الذكر التبركي:</label>
+                    <select id="dhikr-select" class="w-full bg-[#031610] border border-[#C5A059] rounded-xl px-4 py-3 text-sm text-[#E6D5B8] focus:outline-none">
                         <option value="سُبْحَانَ اللَّهِ">سُبْحَانَ اللَّهِ</option>
                         <option value="الْحَمْدُ لِلَّهِ">الْحَمْدُ لِلَّهِ</option>
                         <option value="لَا إِلَهَ إِلَّا اللَّه">لَا إِلَهَ إِلَّا اللَّه</option>
@@ -118,49 +148,49 @@
                     </select>
                 </div>
 
-                <!-- زر التسبيح الدائري الضخم -->
-                <div class="my-8 flex justify-center">
-                    <button onclick="incrementRosary()" class="w-56 h-56 rounded-full border-4 border-[#C5A059] bg-[#031610] shadow-[0_0_30px_rgba(197,160,89,0.3)] flex flex-col items-center justify-center transform active:scale-95 transition focus:outline-none group">
-                        <span id="rosary-count" class="text-6xl font-black gold-gradient mb-1">0</span>
-                        <span class="text-xs text-[#C5A059] tracking-widest uppercase">اضغط للتسبيح</span>
+                <!-- زر التسبيح الضخم المرصع -->
+                <div class="my-10 flex justify-center">
+                    <button onclick="incrementRosary()" class="w-60 h-60 rounded-full border-4 border-[#C5A059] bg-[#020d09] shadow-[0_0_40px_rgba(197,160,89,0.3)] flex flex-col items-center justify-center transform active:scale-95 transition focus:outline-none group">
+                        <span id="rosary-count" class="text-7xl font-black gold-gradient mb-1">0</span>
+                        <span class="text-xs text-[#C5A059] tracking-widest uppercase">انقر للتسبيح</span>
                     </button>
                 </div>
 
                 <div class="flex justify-between items-center mt-6 px-4">
-                    <button onclick="resetRosary()" class="px-4 py-2 bg-red-950/60 border border-red-500/50 text-red-300 rounded-lg text-sm hover:bg-red-900 transition">
+                    <button onclick="resetRosary()" class="px-4 py-2 bg-red-950/60 border border-red-500/40 text-red-300 rounded-xl text-xs hover:bg-red-900 transition">
                         <i class="fa-solid fa-rotate-right ml-1"></i> تصفير العداد
                     </button>
-                    <span id="total-rosary" class="text-sm text-[#C5A059]">المجموع الكلي: 0</span>
+                    <span id="total-rosary" class="text-xs text-[#C5A059]">المجموع التراكمي: 0</span>
                 </div>
             </div>
         </section>
 
-        <!-- قسم مساعد التفسير الذكي (AI Chatbot) -->
+        <!-- قسم مساعد التفسير الذكي (Gemini AI) -->
         <section id="section-ai" class="hidden space-y-6">
-            <div class="gold-bg p-6 rounded-2xl shadow-2xl max-w-3xl mx-auto flex flex-col h-[600px]">
+            <div class="gold-bg p-6 rounded-3xl shadow-2xl max-w-3xl mx-auto flex flex-col h-[600px] border border-[#C5A059]/40">
                 <div class="text-center pb-4 border-b border-[#C5A059]/30 mb-4">
-                    <h2 class="text-2xl font-bold gold-gradient"><i class="fa-solid fa-brain ml-2"></i>المساعد الذكي للقرآن والتفسير</h2>
-                    <p class="text-xs text-[#d4af37b8] mt-1">اسأل عن تفسير أي آية، أسباب النزول، أو المعاني اللغوية</p>
+                    <h2 class="text-2xl font-bold gold-gradient"><i class="fa-solid fa-brain ml-2"></i>مساعد التفسير والتدبر الذكي</h2>
+                    <p class="text-xs text-[#d4af37b8] mt-1">مدعوم بذكاء Gemini الاصطناعي للإجابة عن التفسير والعلوم الشرعية</p>
                 </div>
 
                 <!-- صندوق المحادثة -->
-                <div id="chat-messages" class="flex-grow overflow-y-auto space-y-4 p-4 bg-[#031610]/60 rounded-xl border border-[#C5A059]/25">
+                <div id="chat-messages" class="flex-grow overflow-y-auto space-y-4 p-4 bg-[#020d09]/80 rounded-2xl border border-[#C5A059]/20">
                     <div class="flex items-start space-x-3 space-x-reverse">
-                        <div class="w-8 h-8 rounded-full bg-[#C5A059] text-[#031610] flex items-center justify-center font-bold flex-shrink-0">
+                        <div class="w-8 h-8 rounded-full bg-[#BF953F] text-[#02130e] flex items-center justify-center font-bold flex-shrink-0 shadow">
                             <i class="fa-solid fa-robot"></i>
                         </div>
-                        <div class="bg-[#11382A] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[80%]">
-                            أهلاً بك في رحاب القرآن الكريم. أنا مساعدك الذكي المدمج بالذكاء الاصطناعي والتفسير. كيف يمكنني مساعدتك في تدبر آيات الله اليوم؟ (مثال: ما تفسير آية الكرسي؟ أو ما هي السورة التي تشفع لصاحبها؟)
+                        <div class="bg-[#072218] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[85%]">
+                            أهلاً بك في رحاب القرآن الكريم. اطرح أي سؤال يتعلق بتفسير الآيات، أسباب النزول، أو التدبر وسأجيبك فوراً.
                         </div>
                     </div>
                 </div>
 
-                <!-- إدخال الرسالة -->
+                <!-- خانة الإدخال -->
                 <div class="mt-4 flex gap-2">
-                    <input type="text" id="user-input" placeholder="اكتب سؤالك هنا (مثلاً: ما تفسير سورة الإخلاص؟)..." 
-                        class="flex-grow bg-[#031610] border border-[#C5A059] rounded-xl px-4 py-3 text-[#E6D5B8] focus:outline-none focus:ring-1 focus:ring-[#C5A059]"
-                        onkeypress="if(event.key === 'KeyE' || event.key === 'Enter') sendAIMessage()">
-                    <button onclick="sendAIMessage()" id="send-btn" class="px-6 py-3 bg-[#C5A059] text-[#031610] font-bold rounded-xl hover:bg-[#b09349] transition flex items-center justify-center">
+                    <input type="text" id="user-input" placeholder="اكتب سؤالك (مثلاً: ما تفسير آية الكرسي بالتفصيل؟)..." 
+                        class="flex-grow bg-[#031610] border border-[#C5A059] rounded-xl px-4 py-3 text-sm text-[#E6D5B8] focus:outline-none focus:ring-1 focus:ring-[#C5A059]"
+                        onkeypress="if(event.key === 'Enter') sendAIMessage()">
+                    <button onclick="sendAIMessage()" class="px-6 py-3 bg-gradient-to-r from-[#BF953F] to-[#AA771C] text-[#02130e] font-bold rounded-xl hover:opacity-90 transition flex items-center justify-center shadow-lg">
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 </div>
@@ -169,29 +199,56 @@
 
     </main>
 
+    <!-- شريط التحكم الصوتي السفلي الثابت (فخم ومميز) -->
+    <div id="audio-player-bar" class="fixed bottom-0 left-0 right-0 gold-bg border-t border-[#C5A059]/50 py-3 px-4 z-50 backdrop-blur-lg bg-opacity-95 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <button onclick="togglePlayPause()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-[#BF953F] to-[#FCF6BA] text-[#02130e] flex items-center justify-center text-lg shadow-lg hover:scale-105 transition">
+                    <i id="main-play-icon" class="fa-solid fa-play"></i>
+                </button>
+                <div>
+                    <h4 id="player-surah-title" class="text-sm font-bold gold-gradient">اختر سورة وابدأ التلاوة</h4>
+                    <p id="player-status" class="text-xs text-[#C5A059]">متوقف</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4 space-x-reverse">
+                <button onclick="stopAudio()" class="text-[#E6D5B8] hover:text-[#C5A059] transition text-sm" title="إيقاف">
+                    <i class="fa-solid fa-stop"></i> إيقاف كامل
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- الفوتر -->
     <footer class="gold-bg py-4 text-center text-xs text-[#C5A059] border-t border-[#C5A059]/30 mt-10">
-        <p>صُمّم بكل حب وإجلال لخدمة كتاب الله العزيز &bull; روضة القرآن الكريم 2026</p>
+        <p>مصاحف وخدمات القرآن الكريم الذكية &bull; روضة القرآن الفاخرة</p>
     </footer>
 
-    <!-- ربط ملف الـ AI الخارجي -->
+    <!-- ربط ملف الـ API الخاص بـ Gemini -->
     <script src="ai-service.js"></script>
 
-    <!-- سكود التطبيق التفاعلي -->
+    <!-- سكربت التطبيق الكامل -->
     <script>
-        // التنقل بين الأقسام
+        // التبديل بين التبويبات
         function switchTab(tabName) {
             ['quran', 'rosary', 'ai'].forEach(t => {
                 document.getElementById(`section-${t}`).classList.add('hidden');
-                document.getElementById(`btn-${t}`).classList.remove('bg-[#C5A059]', 'text-[#031610]');
+                document.getElementById(`btn-${t}`).classList.remove('bg-gradient-to-r', 'from-[#BF953F]', 'to-[#AA771C]', 'text-[#02130e]');
                 document.getElementById(`btn-${t}`).classList.add('text-[#E6D5B8]');
             });
             document.getElementById(`section-${tabName}`).classList.remove('hidden');
-            document.getElementById(`btn-${tabName}`).classList.add('bg-[#C5A059]', 'text-[#031610]');
+            document.getElementById(`btn-${tabName}`).classList.add('bg-gradient-to-r', 'from-[#BF953F]', 'to-[#AA771C]', 'text-[#02130e]');
             document.getElementById(`btn-${tabName}`).classList.remove('text-[#E6D5B8]');
         }
 
-        // --- نظام القرآن الكريم ---
+        // --- إدارة القرآن والصوتيات والتظليل التلقائي ---
+        let currentAyahs = [];
+        let currentAudioIndex = 0;
+        let audioElement = new Audio();
+        let isPlaying = false;
+        let currentSurahNumber = 1;
+
         async function fetchSurahsList() {
             try {
                 let response = await fetch('https://api.alquran.cloud/v1/surah');
@@ -201,73 +258,169 @@
                 
                 data.data.forEach(surah => {
                     let btn = document.createElement('button');
-                    btn.className = "px-3 py-1.5 bg-[#031610] border border-[#C5A059]/50 rounded-lg text-xs hover:bg-[#C5A059] hover:text-[#031610] transition font-medium";
-                    btn.innerText = `${surah.number}. ${surah.name} (${surah.numberOfAyahs})`;
-                    btn.onclick = () => loadSurah(surah.number);
+                    btn.className = "px-3 py-1.5 bg-[#031610] border border-[#C5A059]/30 rounded-xl text-xs hover:bg-[#C5A059] hover:text-[#02130e] transition font-medium shadow";
+                    btn.innerText = `${surah.number}. ${surah.name}`;
+                    btn.onclick = () => loadSurahWithAudio(surah.number);
                     listContainer.appendChild(btn);
                 });
 
-                // تحميل سورة الفاتحة افتراضياً
-                loadSurah(1);
+                loadSurahWithAudio(1);
             } catch (e) {
-                document.getElementById('loading-quran').innerHTML = "<p class='text-red-400'>عذراً، فشل تحميل قائمة السور. تحقق من اتصال الإنترنت.</p>";
+                document.getElementById('loading-quran').innerHTML = "<p class='text-red-400'>عذراً، فشل تحميل قائمة السور.</p>";
             }
         }
 
-        async function loadSurah(surahNumber) {
+        async function loadSurahWithAudio(surahNumber) {
+            stopAudio();
+            currentSurahNumber = surahNumber;
             document.getElementById('verses-box').classList.add('hidden');
             document.getElementById('loading-quran').classList.remove('hidden');
             
             try {
-                let response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
+                let reciter = document.getElementById('reciter-select').value;
+                let response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${reciter}`);
                 let data = await response.json();
                 let surah = data.data;
 
-                document.getElementById('current-surah-name').innerText = `${surah.name} - ${surah.englishName}`;
-                
-                // إظهار البسملة لكل السور عدا التوبة (9)
+                document.getElementById('current-surah-name').innerText = `سورة ${surah.name} (${surah.englishName})`;
+                document.getElementById('player-surah-title').innerText = `سورة ${surah.name}`;
+
                 if (surahNumber === 9 || surahNumber === 1) {
                     document.getElementById('bismillah').style.display = 'none';
                 } else {
                     document.getElementById('bismillah').style.display = 'block';
                 }
 
-                let versesContent = '';
-                surah.ayahs.forEach(ayah => {
-                    // إزالة البسملة المكررة في بداية الفاتحة أو التوبة برمجياً إن وجد
+                currentAyahs = surah.ayahs;
+                let versesHTML = '';
+                
+                currentAyahs.forEach((ayah, index) => {
                     let text = ayah.text;
-                    if(surahNumber !== 1 && ayah.numberInSurah === 1) {
+                    if (surahNumber !== 1 && index === 0) {
                         text = text.replace('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', '').trim();
                     }
-                    versesContent += `${text} <span class="text-[#C5A059] text-lg font-sans">﴿${ayah.numberInSurah}﴾</span> `;
+                    versesHTML += `
+                        <span id="ayah-${index}" class="ayah-item inline p-1 rounded-lg cursor-pointer hover:bg-[#C5A059]/10" onclick="playSpecificAyah(${index})">
+                            ${text} <span class="text-[#C5A059] text-lg font-sans">﴿${ayah.numberInSurah}﴾</span>
+                        </span>
+                    `;
                 });
 
-                document.getElementById('verses-content').innerHTML = versesContent;
+                document.getElementById('verses-content').innerHTML = versesHTML;
                 document.getElementById('loading-quran').classList.add('hidden');
                 document.getElementById('verses-box').classList.remove('hidden');
-            } catch(e) {
-                document.getElementById('loading-quran').innerHTML = "<p class='text-red-400'>حدث خطأ أثناء جلب الآيات.</p>";
+            } catch (e) {
+                document.getElementById('loading-quran').innerHTML = "<p class='text-red-400'>حدث خطأ أثناء جلب السورة الصوتية.</p>";
             }
         }
 
-        // --- نظام المسبحة ---
+        function onReciterChange() {
+            loadSurahWithAudio(currentSurahNumber);
+        }
+
+        function startRecitation() {
+            if (currentAyahs.length === 0) return;
+            currentAudioIndex = 0;
+            playAyahAudio(currentAudioIndex);
+        }
+
+        function playSpecificAyah(index) {
+            currentAudioIndex = index;
+            playAyahAudio(currentAudioIndex);
+        }
+
+        function playAyahAudio(index) {
+            if (index >= currentAyahs.length) {
+                stopAudio();
+                return;
+            }
+
+            // إزالة التحديد السابق
+            document.querySelectorAll('.ayah-item').forEach(el => {
+                el.classList.remove('bg-[#C5A059]/30', 'border-b-2', 'border-[#C5A059]', 'shadow-md');
+            });
+
+            // تظليل الآية الحالية والنزول التلقائي إليها (Auto-scroll)
+            let ayahEl = document.getElementById(`ayah-${index}`);
+            if (ayahEl) {
+                ayahEl.classList.add('bg-[#C5A059]/30', 'border-b-2', 'border-[#C5A059]', 'shadow-md');
+                ayahEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            let ayah = currentAyahs[index];
+            audioElement.src = ayah.audio;
+            audioElement.play();
+            isPlaying = true;
+            updatePlayButtonUI();
+
+            document.getElementById('player-status').innerText = `جاري تلاوة الآية ${ayah.numberInSurah}`;
+
+            // الانتقال التلقائي للآية التالية عند انتهاء صوت الآية الحالية
+            audioElement.onended = () => {
+                currentAudioIndex++;
+                if (currentAudioIndex < currentAyahs.length) {
+                    playAyahAudio(currentAudioIndex);
+                } else {
+                    stopAudio();
+                    document.getElementById('player-status').innerText = 'انتهت السورة';
+                }
+            };
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                audioElement.pause();
+                isPlaying = false;
+                document.getElementById('player-status').innerText = 'متوقف مؤقتاً';
+            } else {
+                if (audioElement.src) {
+                    audioElement.play();
+                    isPlaying = true;
+                    document.getElementById('player-status').innerText = 'قيد التشغيل...';
+                } else {
+                    startRecitation();
+                }
+            }
+            updatePlayButtonUI();
+        }
+
+        function stopAudio() {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+            isPlaying = false;
+            updatePlayButtonUI();
+            document.getElementById('player-status').innerText = 'متوقف';
+            document.querySelectorAll('.ayah-item').forEach(el => {
+                el.classList.remove('bg-[#C5A059]/30', 'border-b-2', 'border-[#C5A059]', 'shadow-md');
+            });
+        }
+
+        function updatePlayButtonUI() {
+            let btn = document.getElementById('main-play-icon');
+            if (isPlaying) {
+                btn.classList.remove('fa-play');
+                btn.classList.add('fa-pause');
+            } else {
+                btn.classList.remove('fa-pause');
+                btn.classList.add('fa-play');
+            }
+        }
+
+        // --- المسبحة ---
         let rosaryCount = localStorage.getItem('rosary_count') ? parseInt(localStorage.getItem('rosary_count')) : 0;
         let totalRosaryCount = localStorage.getItem('total_rosary') ? parseInt(localStorage.getItem('total_rosary')) : 0;
         
         document.getElementById('rosary-count').innerText = rosaryCount;
-        document.getElementById('total-rosary').innerText = `المجموع الكلي: ${totalRosaryCount}`;
+        document.getElementById('total-rosary').innerText = `المجموع التراكمي: ${totalRosaryCount}`;
 
         function incrementRosary() {
             rosaryCount++;
             totalRosaryCount++;
             document.getElementById('rosary-count').innerText = rosaryCount;
-            document.getElementById('total-rosary').innerText = `المجموع الكلي: ${totalRosaryCount}`;
-            
+            document.getElementById('total-rosary').innerText = `المجموع التراكمي: ${totalRosaryCount}`;
             localStorage.setItem('rosary_count', rosaryCount);
             localStorage.setItem('total_rosary', totalRosaryCount);
-
-            // اهتزاز بسيط للأجهزة الذكية إن توفر
-            if (navigator.vibrate) navigator.vibrate(40);
+            if (navigator.vibrate) navigator.vibrate(35);
         }
 
         function resetRosary() {
@@ -276,7 +429,7 @@
             localStorage.setItem('rosary_count', 0);
         }
 
-        // --- نظام الذكاء الاصطناعي (الشات بوت) ---
+        // --- الذكاء الاصطناعي (Gemini AI Chatbot) ---
         async function sendAIMessage() {
             let inputField = document.getElementById('user-input');
             let query = inputField.value.trim();
@@ -284,13 +437,12 @@
 
             let chatMessages = document.getElementById('chat-messages');
 
-            // عرض رسالة المستخدم
             chatMessages.innerHTML += `
                 <div class="flex items-start justify-end space-x-3 space-x-reverse">
-                    <div class="bg-[#C5A059] text-[#031610] p-4 rounded-2xl rounded-tl-none text-sm leading-relaxed max-w-[80%] font-medium">
+                    <div class="bg-gradient-to-r from-[#BF953F] to-[#AA771C] text-[#02130e] p-4 rounded-2xl rounded-tl-none text-sm leading-relaxed max-w-[85%] font-bold shadow">
                         ${query}
                     </div>
-                    <div class="w-8 h-8 rounded-full bg-[#1a4d3a] border border-[#C5A059] text-[#E6D5B8] flex items-center justify-center font-bold flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-[#0d3b2e] border border-[#C5A059] text-[#E6D5B8] flex items-center justify-center font-bold flex-shrink-0">
                         <i class="fa-solid fa-user"></i>
                     </div>
                 </div>
@@ -299,31 +451,29 @@
             inputField.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // رسالة جاري الكتابة
             let loadingId = 'loading-' + Date.now();
             chatMessages.innerHTML += `
                 <div id="${loadingId}" class="flex items-start space-x-3 space-x-reverse">
-                    <div class="w-8 h-8 rounded-full bg-[#C5A059] text-[#031610] flex items-center justify-center font-bold flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-[#BF953F] text-[#02130e] flex items-center justify-center font-bold flex-shrink-0">
                         <i class="fa-solid fa-robot"></i>
                     </div>
-                    <div class="bg-[#11382A] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm text-[#E6D5B8]/70">
-                        <i class="fa-solid fa-circle-notch fa-spin ml-2"></i> جاري التدبر واستخراج التفسير...
+                    <div class="bg-[#072218] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm text-[#E6D5B8]/80">
+                        <i class="fa-solid fa-circle-notch fa-spin ml-2"></i> جاري استنباط التفسير والتدبر عبر Gemini AI...
                     </div>
                 </div>
             `;
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // استدعاء دالة الـ API من الملف الخارجي ai-service.js
+            // استدعاء ملف ai-service.js الخارجي
             let aiResponse = await askQuranAI(query);
 
-            // إزالة رسالة التحميل وعرض رد الـ AI
             document.getElementById(loadingId).remove();
             chatMessages.innerHTML += `
                 <div class="flex items-start space-x-3 space-x-reverse">
-                    <div class="w-8 h-8 rounded-full bg-[#C5A059] text-[#031610] flex items-center justify-center font-bold flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-[#BF953F] text-[#02130e] flex items-center justify-center font-bold flex-shrink-0">
                         <i class="fa-solid fa-robot"></i>
                     </div>
-                    <div class="bg-[#11382A] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[80%]">
+                    <div class="bg-[#072218] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[85%]">
                         ${aiResponse}
                     </div>
                 </div>
@@ -331,7 +481,6 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // تشغيل تحميل السور عند فتح الصفحة
         window.onload = () => {
             fetchSurahsList();
         };
