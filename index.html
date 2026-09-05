@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<header lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>روضة القرآن | المصحف الشريف والتفسير الذكي</title>
+    <!-- Tailwind CSS فاخر -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Amiri for Quran, Tajawal for UI) -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #031610;
+            color: #E6D5B8;
+        }
+        .quran-text {
+            font-family: 'Amiri', serif;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-border {
+            border-color: #C5A059;
+        }
+        .gold-bg {
+            background-color: #11382A;
+            border: 1px solid #C5A059;
+        }
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #031610; }
+        ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#C5A059] selection:text-black">
+
+    <!-- شريط التنقل العلوي -->
+    <header class="gold-bg shadow-lg sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-[#C5A059] text-[#031610] font-bold text-xl shadow-inner">
+                    <i class="fa-solid fa-quran"></i>
+                </div>
+                <h1 class="text-2xl font-black gold-gradient tracking-wide">روضة القرآن</h1>
+            </div>
+            
+            <nav class="flex space-x-2 space-x-reverse mt-2 sm:mt-0">
+                <button onclick="switchTab('quran')" id="btn-quran" class="px-4 py-2 rounded-lg font-bold text-sm bg-[#C5A059] text-[#031610] transition shadow">
+                    <i class="fa-solid fa-book-open ml-1"></i> المصحف الشريف
+                </button>
+                <button onclick="switchTab('rosary')" id="btn-rosary" class="px-4 py-2 rounded-lg font-bold text-sm text-[#E6D5B8] hover:bg-[#1a4d3a] transition">
+                    <i class="fa-solid fa-circle-nodes ml-1"></i> المسبحة الإلكترونية
+                </button>
+                <button onclick="switchTab('ai')" id="btn-ai" class="px-4 py-2 rounded-lg font-bold text-sm text-[#E6D5B8] hover:bg-[#1a4d3a] transition">
+                    <i class="fa-solid fa-robot ml-1"></i> مساعد التفسير الذكي
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4 sm:p-6">
+
+        <!-- قسم المصحف الشريف -->
+        <section id="section-quran" class="space-y-6">
+            <div class="gold-bg p-6 rounded-2xl shadow-xl text-center relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 text-[#C5A059] opacity-10 text-9xl">
+                    <i class="fa-solid fa-quran"></i>
+                </div>
+                <h2 class="text-3xl font-bold gold-gradient mb-2">القرآن الكريم كاملاً</h2>
+                <p class="text-sm text-[#d4af37b8] mb-6">اختر السورة لتتلو آياتها وتتدبر معانيها</p>
+                
+                <!-- قائمة السور -->
+                <div class="flex flex-wrap justify-center gap-2 max-h-48 overflow-y-auto p-2 border border-[#C5A059]/30 rounded-xl" id="surahs-list">
+                    <!-- يتم تعبئتها تلقائياً عبر JavaScript -->
+                </div>
+            </div>
+
+            <!-- عرض الآيات -->
+            <div id="quran-container" class="gold-bg p-6 sm:p-10 rounded-2xl shadow-2xl min-h-[400px] relative">
+                <div id="loading-quran" class="text-center py-20 text-[#C5A059]">
+                    <i class="fa-solid fa-spinner fa-spin text-4xl mb-3"></i>
+                    <p>جاري تحميل سور القرآن الكريم...</p>
+                </div>
+                <div id="verses-box" class="hidden">
+                    <div class="text-center pb-6 border-b border-[#C5A059]/30 mb-6">
+                        <h3 id="current-surah-name" class="text-3xl font-bold gold-gradient quran-text"></h3>
+                        <p id="bismillah" class="text-xl quran-text mt-3 text-[#E6D5B8]">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                    </div>
+                    <div id="verses-content" class="text-2xl leading-loose quran-text text-justify space-y-4">
+                        <!-- الآيات -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المسبحة الإلكترونية -->
+        <section id="section-rosary" class="hidden space-y-6">
+            <div class="gold-bg p-8 rounded-2xl shadow-2xl text-center max-w-xl mx-auto relative">
+                <h2 class="text-2xl font-bold gold-gradient mb-4">المسبحة الإلكترونية المباركة</h2>
+                
+                <!-- اختيار الذكر -->
+                <div class="mb-6">
+                    <label class="block text-sm mb-2 text-[#E6D5B8]">اختر الذكر:</label>
+                    <select id="dhikr-select" class="w-full bg-[#031610] border border-[#C5A059] rounded-xl px-4 py-3 text-[#E6D5B8] focus:outline-none">
+                        <option value="سُبْحَانَ اللَّهِ">سُبْحَانَ اللَّهِ</option>
+                        <option value="الْحَمْدُ لِلَّهِ">الْحَمْدُ لِلَّهِ</option>
+                        <option value="لَا إِلَهَ إِلَّا اللَّه">لَا إِلَهَ إِلَّا اللَّه</option>
+                        <option value="اللَّهُ أَكْبَرُ">اللَّهُ أَكْبَرُ</option>
+                        <option value="أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ">أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ</option>
+                        <option value="سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ</option>
+                    </select>
+                </div>
+
+                <!-- زر التسبيح الدائري الضخم -->
+                <div class="my-8 flex justify-center">
+                    <button onclick="incrementRosary()" class="w-56 h-56 rounded-full border-4 border-[#C5A059] bg-[#031610] shadow-[0_0_30px_rgba(197,160,89,0.3)] flex flex-col items-center justify-center transform active:scale-95 transition focus:outline-none group">
+                        <span id="rosary-count" class="text-6xl font-black gold-gradient mb-1">0</span>
+                        <span class="text-xs text-[#C5A059] tracking-widest uppercase">اضغط للتسبيح</span>
+                    </button>
+                </div>
+
+                <div class="flex justify-between items-center mt-6 px-4">
+                    <button onclick="resetRosary()" class="px-4 py-2 bg-red-950/60 border border-red-500/50 text-red-300 rounded-lg text-sm hover:bg-red-900 transition">
+                        <i class="fa-solid fa-rotate-right ml-1"></i> تصفير العداد
+                    </button>
+                    <span id="total-rosary" class="text-sm text-[#C5A059]">المجموع الكلي: 0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم مساعد التفسير الذكي (AI Chatbot) -->
+        <section id="section-ai" class="hidden space-y-6">
+            <div class="gold-bg p-6 rounded-2xl shadow-2xl max-w-3xl mx-auto flex flex-col h-[600px]">
+                <div class="text-center pb-4 border-b border-[#C5A059]/30 mb-4">
+                    <h2 class="text-2xl font-bold gold-gradient"><i class="fa-solid fa-brain ml-2"></i>المساعد الذكي للقرآن والتفسير</h2>
+                    <p class="text-xs text-[#d4af37b8] mt-1">اسأل عن تفسير أي آية، أسباب النزول، أو المعاني اللغوية</p>
+                </div>
+
+                <!-- صندوق المحادثة -->
+                <div id="chat-messages" class="flex-grow overflow-y-auto space-y-4 p-4 bg-[#031610]/60 rounded-xl border border-[#C5A059]/25">
+                    <div class="flex items-start space-x-3 space-x-reverse">
+                        <div class="w-8 h-8 rounded-full bg-[#C5A059] text-[#031610] flex items-center justify-center font-bold flex-shrink-0">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-[#11382A] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[80%]">
+                            أهلاً بك في رحاب القرآن الكريم. أنا مساعدك الذكي المدمج بالذكاء الاصطناعي والتفسير. كيف يمكنني مساعدتك في تدبر آيات الله اليوم؟ (مثال: ما تفسير آية الكرسي؟ أو ما هي السورة التي تشفع لصاحبها؟)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- إدخال الرسالة -->
+                <div class="mt-4 flex gap-2">
+                    <input type="text" id="user-input" placeholder="اكتب سؤالك هنا (مثلاً: ما تفسير سورة الإخلاص؟)..." 
+                        class="flex-grow bg-[#031610] border border-[#C5A059] rounded-xl px-4 py-3 text-[#E6D5B8] focus:outline-none focus:ring-1 focus:ring-[#C5A059]"
+                        onkeypress="if(event.key === 'KeyE' || event.key === 'Enter') sendAIMessage()">
+                    <button onclick="sendAIMessage()" id="send-btn" class="px-6 py-3 bg-[#C5A059] text-[#031610] font-bold rounded-xl hover:bg-[#b09349] transition flex items-center justify-center">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="gold-bg py-4 text-center text-xs text-[#C5A059] border-t border-[#C5A059]/30 mt-10">
+        <p>صُمّم بكل حب وإجلال لخدمة كتاب الله العزيز &bull; روضة القرآن الكريم 2026</p>
+    </footer>
+
+    <!-- ربط ملف الـ AI الخارجي -->
+    <script src="ai-service.js"></script>
+
+    <!-- سكود التطبيق التفاعلي -->
+    <script>
+        // التنقل بين الأقسام
+        function switchTab(tabName) {
+            ['quran', 'rosary', 'ai'].forEach(t => {
+                document.getElementById(`section-${t}`).classList.add('hidden');
+                document.getElementById(`btn-${t}`).classList.remove('bg-[#C5A059]', 'text-[#031610]');
+                document.getElementById(`btn-${t}`).classList.add('text-[#E6D5B8]');
+            });
+            document.getElementById(`section-${tabName}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabName}`).classList.add('bg-[#C5A059]', 'text-[#031610]');
+            document.getElementById(`btn-${tabName}`).classList.remove('text-[#E6D5B8]');
+        }
+
+        // --- نظام القرآن الكريم ---
+        async function fetchSurahsList() {
+            try {
+                let response = await fetch('https://api.alquran.cloud/v1/surah');
+                let data = await response.json();
+                let listContainer = document.getElementById('surahs-list');
+                listContainer.innerHTML = '';
+                
+                data.data.forEach(surah => {
+                    let btn = document.createElement('button');
+                    btn.className = "px-3 py-1.5 bg-[#031610] border border-[#C5A059]/50 rounded-lg text-xs hover:bg-[#C5A059] hover:text-[#031610] transition font-medium";
+                    btn.innerText = `${surah.number}. ${surah.name} (${surah.numberOfAyahs})`;
+                    btn.onclick = () => loadSurah(surah.number);
+                    listContainer.appendChild(btn);
+                });
+
+                // تحميل سورة الفاتحة افتراضياً
+                loadSurah(1);
+            } catch (e) {
+                document.getElementById('loading-quran').innerHTML = "<p class='text-red-400'>عذراً، فشل تحميل قائمة السور. تحقق من اتصال الإنترنت.</p>";
+            }
+        }
+
+        async function loadSurah(surahNumber) {
+            document.getElementById('verses-box').classList.add('hidden');
+            document.getElementById('loading-quran').classList.remove('hidden');
+            
+            try {
+                let response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
+                let data = await response.json();
+                let surah = data.data;
+
+                document.getElementById('current-surah-name').innerText = `${surah.name} - ${surah.englishName}`;
+                
+                // إظهار البسملة لكل السور عدا التوبة (9)
+                if (surahNumber === 9 || surahNumber === 1) {
+                    document.getElementById('bismillah').style.display = 'none';
+                } else {
+                    document.getElementById('bismillah').style.display = 'block';
+                }
+
+                let versesContent = '';
+                surah.ayahs.forEach(ayah => {
+                    // إزالة البسملة المكررة في بداية الفاتحة أو التوبة برمجياً إن وجد
+                    let text = ayah.text;
+                    if(surahNumber !== 1 && ayah.numberInSurah === 1) {
+                        text = text.replace('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', '').trim();
+                    }
+                    versesContent += `${text} <span class="text-[#C5A059] text-lg font-sans">﴿${ayah.numberInSurah}﴾</span> `;
+                });
+
+                document.getElementById('verses-content').innerHTML = versesContent;
+                document.getElementById('loading-quran').classList.add('hidden');
+                document.getElementById('verses-box').classList.remove('hidden');
+            } catch(e) {
+                document.getElementById('loading-quran').innerHTML = "<p class='text-red-400'>حدث خطأ أثناء جلب الآيات.</p>";
+            }
+        }
+
+        // --- نظام المسبحة ---
+        let rosaryCount = localStorage.getItem('rosary_count') ? parseInt(localStorage.getItem('rosary_count')) : 0;
+        let totalRosaryCount = localStorage.getItem('total_rosary') ? parseInt(localStorage.getItem('total_rosary')) : 0;
+        
+        document.getElementById('rosary-count').innerText = rosaryCount;
+        document.getElementById('total-rosary').innerText = `المجموع الكلي: ${totalRosaryCount}`;
+
+        function incrementRosary() {
+            rosaryCount++;
+            totalRosaryCount++;
+            document.getElementById('rosary-count').innerText = rosaryCount;
+            document.getElementById('total-rosary').innerText = `المجموع الكلي: ${totalRosaryCount}`;
+            
+            localStorage.setItem('rosary_count', rosaryCount);
+            localStorage.setItem('total_rosary', totalRosaryCount);
+
+            // اهتزاز بسيط للأجهزة الذكية إن توفر
+            if (navigator.vibrate) navigator.vibrate(40);
+        }
+
+        function resetRosary() {
+            rosaryCount = 0;
+            document.getElementById('rosary-count').innerText = 0;
+            localStorage.setItem('rosary_count', 0);
+        }
+
+        // --- نظام الذكاء الاصطناعي (الشات بوت) ---
+        async function sendAIMessage() {
+            let inputField = document.getElementById('user-input');
+            let query = inputField.value.trim();
+            if (!query) return;
+
+            let chatMessages = document.getElementById('chat-messages');
+
+            // عرض رسالة المستخدم
+            chatMessages.innerHTML += `
+                <div class="flex items-start justify-end space-x-3 space-x-reverse">
+                    <div class="bg-[#C5A059] text-[#031610] p-4 rounded-2xl rounded-tl-none text-sm leading-relaxed max-w-[80%] font-medium">
+                        ${query}
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-[#1a4d3a] border border-[#C5A059] text-[#E6D5B8] flex items-center justify-center font-bold flex-shrink-0">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+            `;
+            
+            inputField.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // رسالة جاري الكتابة
+            let loadingId = 'loading-' + Date.now();
+            chatMessages.innerHTML += `
+                <div id="${loadingId}" class="flex items-start space-x-3 space-x-reverse">
+                    <div class="w-8 h-8 rounded-full bg-[#C5A059] text-[#031610] flex items-center justify-center font-bold flex-shrink-0">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-[#11382A] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm text-[#E6D5B8]/70">
+                        <i class="fa-solid fa-circle-notch fa-spin ml-2"></i> جاري التدبر واستخراج التفسير...
+                    </div>
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // استدعاء دالة الـ API من الملف الخارجي ai-service.js
+            let aiResponse = await askQuranAI(query);
+
+            // إزالة رسالة التحميل وعرض رد الـ AI
+            document.getElementById(loadingId).remove();
+            chatMessages.innerHTML += `
+                <div class="flex items-start space-x-3 space-x-reverse">
+                    <div class="w-8 h-8 rounded-full bg-[#C5A059] text-[#031610] flex items-center justify-center font-bold flex-shrink-0">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-[#11382A] border border-[#C5A059]/40 p-4 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[80%]">
+                        ${aiResponse}
+                    </div>
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // تشغيل تحميل السور عند فتح الصفحة
+        window.onload = () => {
+            fetchSurahsList();
+        };
+    </script>
+</body>
+</html>
