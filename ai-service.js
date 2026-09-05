@@ -1,53 +1,57 @@
 /**
- * ملف خدمة الذكاء الاصطناعي للتفسير والرد على الأسئلة الدينية
- * مدمج به المفتاح الخاص بك
+ * ملف خدمة الذكاء الاصطناعي المحدث لـ Google Gemini API
+ * متوافق تماماً مع مفاتيح الـ AQ. الحديثة
  */
 
-const QURAN_AI_CREDENTIALS = {
+const QURAN_AI_CONFIG = {
     apiKey: "AQ.Ab8RN6K8owh5OQiZeM2aMLOJZYoVsUvv07GxdWR4m2Mwxxehlg",
-    // افتراض نقطة النهاية (Endpoint) للنموذج المدعوم (يمكن تعديلها حسب المزود الخاص بالـ API)
-    endpoint: "https://api.openai.com/v1/chat/completions" 
+    // نقطة النهاية الرسمية لنموذج Gemini 1.5 Flash
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
 };
 
 /**
- * دالة إرسال السؤال للمساعد الذكي واستقبال التفسير أو الإجابة
- * @param {string} userQuestion - سؤال المستخدم أو الآية المراد تفسيرها
+ * دالة إرسال السؤال لـ Gemini لتفسير الآيات والرد على الأسئلة الإسلامية
+ * @param {string} userQuestion - سؤال المستخدم
  * @returns {Promise<string>} - رد الذكاء الاصطناعي
  */
 async function askQuranAI(userQuestion) {
     try {
-        const response = await fetch(QURAN_AI_CREDENTIALS.endpoint, {
+        const url = `${QURAN_AI_CONFIG.endpoint}?key=${QURAN_AI_CONFIG.apiKey}`;
+        
+        const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${QURAN_AI_CREDENTIALS.apiKey}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "gpt-4o", // أو الموديل المتوافق مع الـ API الخاص بك
-                messages: [
+                system_instruction: {
+                    parts: [{
+                        text: "أنت عالم تفسير ومساعد إسلامي ذكي متخصص في القرآن الكريم، علومه، وتفسيره. أجب بلغة عربية فصحى بأسلوب دافئ، علمي، ومبسط."
+                    }]
+                },
+                contents: [
                     {
-                        role: "system",
-                        content: "أنت عالم تفسير ومساعد إسلامي ذكي، خبير بالقرآن الكريم، علومه، وتفسيره (ابن كثير، السعدي، إلخ). أجب بلغة عربية فصحى، بأسلوب دافئ، علمي، ومبسط."
-                    },
-                    {
-                        role: "user",
-                        content: userQuestion
+                        parts: [
+                            { text: userQuestion }
+                        ]
                     }
-                ],
-                temperature: 0.7
+                ]
             })
         });
 
         const data = await response.json();
         
-        if (data.choices && data.choices.length > 0) {
-            return data.choices[0].message.content;
+        // استخراج الإجابة من هيكل بيانات Gemini
+        if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+            return data.candidates[0].content.parts[0].text;
+        } else if (data.error) {
+            console.error("Gemini API Error:", data.error);
+            return `عذراً، حدث خطأ من الخادم: ${data.error.message || "تأكد من صلاحية مفتاح الـ API."}`;
         } else {
-            return "عذراً، لم أتمكن من معالجة الطلب حالياً. يجدر التحقق من نقطة النهاية (Endpoint) الخاصة بمزود الـ API.";
+            return "عذراً، لم أتمكن من الحصول على إجابة في الوقت الحالي.";
         }
     } catch (error) {
-        console.error("AI Service Error:", error);
-        // في حال فشل الاتصال المباشر (لأسباب تخص مزود الـ API)، نعطي رداً تجريبياً ذكياً للمحاكاة
-        return "أهلاً بك. استناداً إلى سؤالك حول القرآن الكريم وتفسيره: تأكد من تفعيل الاتصال بخدمة الـ AI بشكل صحيح. (ملاحظة: هذا رد احتياطي لضمان عمل واجهة الموقع بسلاسة).";
+        console.error("Network Error:", error);
+        return "عذراً، حدث خطأ في الاتصال بخدمة الذكاء الاصطناعي. تأكد من اتصالك بالإنترنت.";
     }
 }
